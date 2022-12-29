@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement Instance;
     [Header("Move And Jump")]
     public float JumpForce = 5f;
-    public float MovementSpeed = 5f;
+    public float MovementSpeed;
     public Rigidbody Rigidbody;
     public float Fallmultiplier = 2.0f;
     private bool onGround = true;
@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     float TurnSmoothTurnTime = 0.1f;
     [SerializeField] Transform rayTransform;
     public RaycastHit hit;
+    public bool inrope=false;
+    public GameObject rope;
 
     private void Awake()
     {
@@ -36,27 +38,41 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+
+        if (inrope)
+        {
+            
+            if (Input.GetKey(KeyCode.W))
+            {
+                transform.position += transform.up * 3f * Time.deltaTime;
+                anim.SetBool("ropeMove", true);
+            }
+            if (Input.GetKeyUp(KeyCode.W))
+            {
+                anim.SetBool("ropeMove", false);
+            }
+        }
         //Hereket
         var movement = Input.GetAxis("Horizontal");
         transform.position += new Vector3(movement, 0, 0) * Time.deltaTime * MovementSpeed;
 
         //Lazerle yoxlanis
         
-        Debug.DrawRay(rayTransform.position, -rayTransform.right * 0.3f, Color.red);
-        if (Physics.Raycast(rayTransform.position, -rayTransform.right, out hit, 0.3f))
-        {
-            if (hit.transform.CompareTag("wall"))
-            {
-                Debug.Log(hit.transform.name);
-                MovementSpeed = 0;
-            }
+        //Debug.DrawRay(rayTransform.position, -rayTransform.right * 0.3f, Color.red);
+        //if (Physics.Raycast(rayTransform.position, -rayTransform.right, out hit, 0.3f))
+        //{
+        //    if (hit.transform.CompareTag("wall"))
+        //    {
+        //        Debug.Log(hit.transform.name);
+        //        MovementSpeed = 0;
+        //    }
             
 
-        }
-        else
-        {
-            MovementSpeed = 5;
-        }
+        //}
+        //else
+        //{
+        //    MovementSpeed = 5;
+        //}
 
         //atlama
 
@@ -90,16 +106,15 @@ public class PlayerMovement : MonoBehaviour
                EventHolder.Instance.PlayerHoldMoveStart(gameObject);
             }
             
-            if (!transform.GetComponent<HoldControl>().isPicked)
+            if (!transform.GetComponent<HoldControl>().isPicked && !inrope)
             {
                 float targetAngle = Mathf.Atan2(direction.x, 0) * Mathf.Rad2Deg;
                 float turnAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle + 90, ref TurnSmoothVelocity, TurnSmoothTurnTime);
                 transform.rotation = Quaternion.Euler(0, turnAngle, 0);
-                MovementSpeed = 5f;
-            }
-            else
-            {
                 
+            }
+            if(transform.GetComponent<HoldControl>().isPicked)
+            {
                 MovementSpeed = 4f;
             }
             
@@ -128,7 +143,30 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!GetComponent<HoldControl>().isPicked && other.CompareTag("rope"))
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+            inrope = true;
+            anim.SetBool("rope", true);
+            MovementSpeed = 0;
+           // isPicked = true;
+           // rope = PlayerMovement.Instance.hit.transform.gameObject;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (!GetComponent<HoldControl>().isPicked && other.CompareTag("rope"))
+        {
+            GetComponent<Rigidbody>().isKinematic = false;
+            Rigidbody.AddForce(transform.up *3f, ForceMode.Impulse);
+            anim.SetBool("ropeMove", false);
+            anim.SetBool("rope", false);
+            inrope = false;
+            PlayerMovement.Instance.MovementSpeed = 5;
+        }
+    }
 
 
 
