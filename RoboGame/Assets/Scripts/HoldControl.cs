@@ -82,9 +82,10 @@ public class HoldControl : MonoBehaviour
         {
             //hj.connectedBody = PlayerMovement.Instance.hit.transform.gameObject.GetComponent<Rigidbody>();
             Debug.Log("cixdim");
+            PlayerMovement.Instance.Rigidbody.AddForce(transform.up * .2f, ForceMode.Impulse);
             PlayerMovement.Instance.anim.SetBool("ropeMove", false);
             PlayerMovement.Instance.anim.SetBool("rope", false);
-            PlayerMovement.Instance.Rigidbody.AddForce(transform.up * 1f, ForceMode.Impulse);
+           
            // hj.connectedBody = null;
             inrope = false;
             
