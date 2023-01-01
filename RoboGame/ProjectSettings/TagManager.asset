@@ -8,6 +8,11 @@ TagManager:
   - rope
   - ropeEnd
   - ropeActive
+  - Ground
+  - box
+  - p1
+  - p2
+  - particle2
   layers:
   - Default
   - TransparentFX

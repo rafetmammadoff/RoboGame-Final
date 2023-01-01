@@ -45,7 +45,7 @@ public class AnimatorControl : MonoBehaviour
     #region Run-Animation
     private void PlayerMoveAnim(GameObject obj)
         {
-            PlayerMovement.Instance.anim.SetFloat("run",PlayerMovement.Instance.direction.magnitude);
+            PlayerMovement.Instance.anim.SetFloat("run",PlayerMovement.Instance.customMagnitude);
         }
     #endregion
 
@@ -59,7 +59,7 @@ public class AnimatorControl : MonoBehaviour
     #region RunToIdle
         private void PlayerRunToIdle(GameObject obj)
         {
-        PlayerMovement.Instance.anim.SetFloat("run", PlayerMovement.Instance.direction.magnitude);
+        PlayerMovement.Instance.anim.SetFloat("run", PlayerMovement.Instance.customMagnitude);
         
 
     }
