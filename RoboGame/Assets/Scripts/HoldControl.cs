@@ -41,6 +41,7 @@ public class HoldControl : MonoBehaviour
         {
             BrakeObj();
         }
+        
     }
 
     private void BrakeObj()
@@ -48,7 +49,7 @@ public class HoldControl : MonoBehaviour
         if (isPicked)
         {
             EventHolder.Instance.PlayerHoldToIdle(gameObject);
-            _PickedItem.AddComponent<Rigidbody>().constraints=RigidbodyConstraints.FreezeAll | RigidbodyConstraints.FreezeRotation;
+            _PickedItem.AddComponent<Rigidbody>().constraints=RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
             _PickedItem.transform.parent =null;
             isPicked = false;
         }

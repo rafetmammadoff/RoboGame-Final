@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         #region RopeClimb
         if (inrope)
         {
-
+            MovementSpeed = 0;
             if (Input.GetKey(KeyCode.W))
             {
                 transform.position += transform.up * 3f * Time.deltaTime;
@@ -52,12 +52,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 anim.SetBool("ropeMove", false);
             }
+            
         }
         #endregion
 
         #region Movement
         var movement = Input.GetAxis("Horizontal");
-        transform.position += new Vector3(0, 0, -movement) * Time.deltaTime * MovementSpeed;
+        transform.position += new Vector3(movement, 0,0) * Time.deltaTime * MovementSpeed;
         #endregion
 
         #region Jump
@@ -65,13 +66,15 @@ public class PlayerMovement : MonoBehaviour
         {
             onGround = false;
             EventHolder.Instance.PlayerJumpStart(gameObject);
-            StartCoroutine(WaitJump());
+            //StartCoroutine(WaitJump());
+            onGround = false;
+            Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
         }
         #endregion
 
         #region Rotation & Run-Idle-Animation
 
-        direction = new Vector3(0, 0, -movement);
+        direction = new Vector3(movement, 0, 0);
         customMagnitude = direction.magnitude;
         if (customMagnitude > 0.01f)
         {
@@ -87,14 +90,14 @@ public class PlayerMovement : MonoBehaviour
 
             if (!transform.GetComponent<HoldControl>().isPicked && !inrope)
             {
-                float targetAngle = Mathf.Atan2(direction.z, 0) * Mathf.Rad2Deg;
-                float turnAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref TurnSmoothVelocity, TurnSmoothTurnTime);
+                float targetAngle = Mathf.Atan2(direction.x, 0) * Mathf.Rad2Deg;
+                float turnAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle+90, ref TurnSmoothVelocity, TurnSmoothTurnTime);
                 transform.rotation = Quaternion.Euler(0, turnAngle, 0);
 
             }
             if (transform.GetComponent<HoldControl>().isPicked)
             {
-                MovementSpeed = 4f;
+                MovementSpeed = 3f;
             }
         }
         else
@@ -127,7 +130,10 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            MovementSpeed = 5;
+            if (!HoldControl.Instance.isPicked)
+            {
+                MovementSpeed = 3f;
+            }
         }
         #endregion
     }
@@ -139,12 +145,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     #region WaitJump
-    public IEnumerator WaitJump()
-    {
-        yield return new WaitForSeconds(.5f);
-        onGround = false;
-        Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
-    }
+    //public IEnumerator WaitJump()
+    //{
+    //    yield return new WaitForSeconds(.5f);
+    //    onGround = false;
+    //    Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
+    //}
     #endregion
     private void OnTriggerEnter(Collider other)
     {
@@ -158,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
             Transform teleportTransform = GameObject.FindGameObjectWithTag("p2").transform;
             transform.DOScale(0, 0.1f).OnComplete(() =>
             {
-                transform.position = new Vector3(teleportTransform.position.x, teleportTransform.position.y-2, teleportTransform.position.z);
+                transform.position = new Vector3(teleportTransform.position.x-2, teleportTransform.position.y, teleportTransform.position.z);
                 transform.DOScale(1, 0.2f);
             });
         }
@@ -169,7 +175,107 @@ public class PlayerMovement : MonoBehaviour
             transform.DOScale(0, 0.1f).OnComplete(() =>
             {
 
-                transform.position = new Vector3(teleportTransform.position.x, teleportTransform.position.y, teleportTransform.position.z + 1);
+                transform.position = new Vector3(teleportTransform.position.x-2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+
+        }
+
+
+
+
+
+
+        if (other.CompareTag("p3"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p4").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+                transform.position = new Vector3(teleportTransform.position.x + 2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+        }
+
+        if (other.CompareTag("p4"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p3").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+
+                transform.position = new Vector3(teleportTransform.position.x - 2 , teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+
+        }
+
+
+
+
+
+
+
+
+
+        if (other.CompareTag("p5"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p6").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+                transform.position = new Vector3(teleportTransform.position.x + 2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+        }
+
+        if (other.CompareTag("p6"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p5").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+
+                transform.position = new Vector3(teleportTransform.position.x - 2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+
+        }
+
+
+
+
+        if (other.CompareTag("p7"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p8").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+                transform.position = new Vector3(teleportTransform.position.x + 2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+        }
+
+        if (other.CompareTag("p8"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p7").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+
+                transform.position = new Vector3(teleportTransform.position.x - 2, teleportTransform.position.y, teleportTransform.position.z);
+                transform.DOScale(1, 0.2f);
+            });
+
+        }
+
+
+
+
+
+
+        
+        if (other.CompareTag("p9"))
+        {
+            Transform teleportTransform = GameObject.FindGameObjectWithTag("p8").transform;
+            transform.DOScale(0, 0.1f).OnComplete(() =>
+            {
+
+                transform.position = new Vector3(teleportTransform.position.x + 2, teleportTransform.position.y, teleportTransform.position.z);
                 transform.DOScale(1, 0.2f);
             });
 
@@ -185,7 +291,7 @@ public class PlayerMovement : MonoBehaviour
             Rigidbody.AddForce(transform.up *3f, ForceMode.Impulse);
             anim.SetBool("ropeMove", false);
             anim.SetBool("rope", false);
-            MovementSpeed = 5;
+            MovementSpeed = 3;
         }
     }
     private void OnCollisionEnter(Collision other)
@@ -195,17 +301,22 @@ public class PlayerMovement : MonoBehaviour
             GetComponent<Rigidbody>().isKinematic = true;
             inrope = true;
             anim.SetBool("rope", true);
+            anim.SetBool("ropeMove", false);
             MovementSpeed = 0;
         }
 
-       
+        if (other.transform.CompareTag("Ground"))
+        {
+            inrope = false;
+        }
+
+
     }
     private void OnCollisionStay(Collision other)
     {
         if (other.transform.CompareTag("Ground") || other.transform.CompareTag("box"))
         {
             onGround = true;
-            inrope = false;
         }
     }
     private void OnCollisionExit(Collision other)
