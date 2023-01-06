@@ -13,7 +13,7 @@ public class HoldControl : MonoBehaviour
     [SerializeField] float Radius;
     Collider[] Cols;
     [SerializeField] LayerMask LayerMask;
-    GameObject _PickedItem;
+    public GameObject _PickedItem;
     HingeJoint hj;
     Rigidbody itemRb;
     bool inrope = false;

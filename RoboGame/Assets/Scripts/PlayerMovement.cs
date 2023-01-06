@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] ParticleSystem particle2;
     [SerializeField] ParticleSystem particle1;
     public float customMagnitude;
+    [SerializeField] float speed;
     private void Awake()
     {
         if (Instance==null)
@@ -58,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
 
         #region Movement
         var movement = Input.GetAxis("Horizontal");
-        transform.position += new Vector3(movement, 0,0) * Time.deltaTime * MovementSpeed;
+        //transform.position += new Vector3(movement, 0,0) * Time.deltaTime * MovementSpeed;
         #endregion
 
         #region Jump
@@ -99,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 MovementSpeed = 3f;
             }
+            Rigidbody.MovePosition(transform.position += (direction * MovementSpeed * Time.deltaTime));
         }
         else
         {
@@ -155,6 +157,25 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         StartCoroutine(Teleport(other));
+        if (!GetComponent<HoldControl>().isPicked && other.transform.CompareTag("rope") && !inrope)
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+            inrope = true;
+            anim.SetBool("rope", true);
+            anim.SetBool("ropeMove", false);
+            MovementSpeed = 0;
+        }
+
+
+        if (other.CompareTag("fallCube"))
+        {
+            transform.GetChild(3).parent = null;
+            EventHolder.Instance.PlayerHoldToIdle(gameObject);
+           HoldControl.Instance._PickedItem.AddComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            HoldControl.Instance._PickedItem.transform.parent = null;
+            HoldControl.Instance.isPicked = false;
+            Destroy(other.gameObject);
+        }
     }
     #region Teleport
     public IEnumerator Teleport(Collider other)
@@ -287,6 +308,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("ropeEnd"))
         {
+            inrope = false;
             GetComponent<Rigidbody>().isKinematic = false;
             Rigidbody.AddForce(transform.up *3f, ForceMode.Impulse);
             anim.SetBool("ropeMove", false);
@@ -296,21 +318,18 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        if (!GetComponent<HoldControl>().isPicked && other.transform.CompareTag("rope") && !inrope)
-        {
-            GetComponent<Rigidbody>().isKinematic = true;
-            inrope = true;
-            anim.SetBool("rope", true);
-            anim.SetBool("ropeMove", false);
-            MovementSpeed = 0;
-        }
+        
 
         if (other.transform.CompareTag("Ground"))
         {
             inrope = false;
         }
 
-
+        if (other.transform.CompareTag("tele"))
+        {
+            tele.Instance.teleAnim.SetTrigger("active");
+            tele.Instance.isActive = false;
+        }
     }
     private void OnCollisionStay(Collision other)
     {

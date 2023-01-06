@@ -20,6 +20,9 @@ TagManager:
   - p7
   - p8
   - p9
+  - tele
+  - activeTele
+  - fallCube
   layers:
   - Default
   - TransparentFX
