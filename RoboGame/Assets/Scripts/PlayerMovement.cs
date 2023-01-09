@@ -382,6 +382,11 @@ public class PlayerMovement : MonoBehaviour
         {
             tele.Instance.teleAnim.SetTrigger("active");
             tele.Instance.isActive = false;
+            anim.SetTrigger("dead");
+        }
+        if (other.transform.CompareTag("blender"))
+        {
+            anim.SetTrigger("dead");
         }
 
         if (other.transform.CompareTag("box")  && HoldControl.Instance.isPicked)
@@ -390,14 +395,14 @@ public class PlayerMovement : MonoBehaviour
             isMoveable = false;
             MovementSpeed = 0;
         }
-        
-    }
-    private void OnCollisionStay(Collision other)
-    {
         if (other.transform.CompareTag("Ground") || other.transform.CompareTag("box"))
         {
             onGround = true;
         }
+    }
+    private void OnCollisionStay(Collision other)
+    {
+      
 
         
     }

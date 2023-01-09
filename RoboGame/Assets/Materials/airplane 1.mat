@@ -121,7 +121,7 @@ Material:
     - _IndirectIntensityOutline: 0
     - _MatCapMaskChannel: 0
     - _MatCapType: 0
-    - _Metallic: 0
+    - _Metallic: 0.937
     - _NormalsSource: 0
     - _NormalsUVType: 0
     - _OcclusionChannel: 0
@@ -150,7 +150,7 @@ Material:
     - _RimMax: 1
     - _RimMin: 0.5
     - _SingleIndirectColor: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.81
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularMapType: 0

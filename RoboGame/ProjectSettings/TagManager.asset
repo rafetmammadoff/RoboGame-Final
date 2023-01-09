@@ -23,6 +23,7 @@ TagManager:
   - tele
   - activeTele
   - fallCube
+  - blender
   layers:
   - Default
   - TransparentFX

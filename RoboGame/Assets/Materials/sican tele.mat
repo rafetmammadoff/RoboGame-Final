@@ -121,7 +121,7 @@ Material:
     - _IndirectIntensityOutline: 0
     - _MatCapMaskChannel: 0
     - _MatCapType: 0
-    - _Metallic: 0
+    - _Metallic: 0.169
     - _NormalsSource: 0
     - _NormalsUVType: 0
     - _OcclusionChannel: 0
