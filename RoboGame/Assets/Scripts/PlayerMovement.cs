@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     float TurnSmoothVelocity;
     float TurnSmoothTurnTime = 0.1f;
     [SerializeField] Transform rayTransform;
+    [SerializeField] Transform rayTransformBack;
     public RaycastHit hit;
     public bool inrope=false;
     public GameObject rope;
@@ -27,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] ParticleSystem particle1;
     public float customMagnitude;
     [SerializeField] float speed;
+    float movement;
+    public bool isMoveable = true;
+    bool isRight;
     private void Awake()
     {
         if (Instance==null)
@@ -40,6 +44,24 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if (isRight && movement<0)
+        {
+            isMoveable = true;
+            MovementSpeed = 3;
+        }
+        if (!isRight && movement>0)
+        {
+            isMoveable = true;
+            MovementSpeed = 3;
+        }
+        if (movement>0)
+        {
+            isRight = true;
+        }
+        else if (movement < 0)
+        {
+            isRight = false;
+        }
         #region RopeClimb
         if (inrope)
         {
@@ -58,10 +80,13 @@ public class PlayerMovement : MonoBehaviour
         #endregion
 
         #region Movement
-        var movement = Input.GetAxis("Horizontal");
+        movement = Input.GetAxis("Horizontal");
         //transform.position += new Vector3(movement, 0,0) * Time.deltaTime * MovementSpeed;
         #endregion
-
+        //if (movement>0)
+        //{
+        //    movement = 0;
+        //}
         #region Jump
         if (Input.GetKeyDown(KeyCode.Space) && onGround == true && !transform.GetComponent<HoldControl>().isPicked)
         {
@@ -100,7 +125,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 MovementSpeed = 3f;
             }
-            Rigidbody.MovePosition(transform.position += (direction * MovementSpeed * Time.deltaTime));
+            if (isMoveable)
+            {
+                Rigidbody.MovePosition(transform.position += (direction * MovementSpeed * Time.deltaTime));
+            }
+
         }
         else
         {
@@ -137,6 +166,30 @@ public class PlayerMovement : MonoBehaviour
                 MovementSpeed = 3f;
             }
         }
+
+
+
+
+        //Debug.DrawRay(rayTransformBack.position, rayTransformBack.right * 0.3f, Color.red);
+        //if (Physics.Raycast(rayTransformBack.position, rayTransformBack.right, out hit, 0.3f))
+        //{
+        //    if (hit.transform.CompareTag("box"))
+        //    {
+        //        Debug.Log(hit.transform.name);
+        //        MovementSpeed = 0;
+        //        customMagnitude = 0;
+        //        EventHolder.Instance.PlayerRunToIdle(gameObject);
+        //    }
+
+
+        //}
+        //else
+        //{
+        //    if (!HoldControl.Instance.isPicked)
+        //    {
+        //        MovementSpeed = 3f;
+        //    }
+        //}
         #endregion
     }
     private void FixedUpdate()
@@ -330,6 +383,14 @@ public class PlayerMovement : MonoBehaviour
             tele.Instance.teleAnim.SetTrigger("active");
             tele.Instance.isActive = false;
         }
+
+        if (other.transform.CompareTag("box")  && HoldControl.Instance.isPicked)
+        {
+            Debug.Log("===========");
+            isMoveable = false;
+            MovementSpeed = 0;
+        }
+        
     }
     private void OnCollisionStay(Collision other)
     {
@@ -337,6 +398,8 @@ public class PlayerMovement : MonoBehaviour
         {
             onGround = true;
         }
+
+        
     }
     private void OnCollisionExit(Collision other)
     {

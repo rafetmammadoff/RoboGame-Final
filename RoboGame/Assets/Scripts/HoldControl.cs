@@ -49,9 +49,11 @@ public class HoldControl : MonoBehaviour
         if (isPicked)
         {
             EventHolder.Instance.PlayerHoldToIdle(gameObject);
-            _PickedItem.AddComponent<Rigidbody>().constraints=RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            //_PickedItem.AddComponent<Rigidbody>().constraints=RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
             _PickedItem.transform.parent =null;
             isPicked = false;
+            _PickedItem.gameObject.AddComponent<detectBox>();
+
         }
     }
 
@@ -65,7 +67,8 @@ public class HoldControl : MonoBehaviour
                 isPicked = true;
                 _PickedItem = item.gameObject;
                 _PickedItem.transform.parent = transform;
-                Destroy(_PickedItem.GetComponent<Rigidbody>()); 
+               // Destroy(_PickedItem.GetComponent<Rigidbody>()); 
+               item.gameObject.AddComponent<detectBox>();
                 EventHolder.Instance.PlayerHoldIdleStart(gameObject);
             }
         }

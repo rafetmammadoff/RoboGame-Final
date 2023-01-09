@@ -31,7 +31,7 @@ public class Plane : MonoBehaviour
     {
         if (collision.transform.CompareTag("Player"))
         {
-            PlaneAnim.SetTrigger("deactive");
+            
         }
     }
 
@@ -39,8 +39,12 @@ public class Plane : MonoBehaviour
     public IEnumerator WaitFly()
     {
         yield return new WaitForSeconds(0.5f);
-        transform.DOMoveY(transform.position.y + 6, 4);
-        yield return new WaitForSeconds(2f);
-        transform.DOMoveY(transform.position.y - 6, 4);
+        transform.DOMoveY(transform.position.y + 6, 4).OnComplete(() =>
+        {
+            transform.DOMoveY(0.40f, 4).OnComplete(() =>
+            {
+                PlaneAnim.SetTrigger("deactive");
+            });
+        });
     }
 }
