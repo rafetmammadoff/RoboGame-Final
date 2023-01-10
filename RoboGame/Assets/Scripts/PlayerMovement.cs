@@ -229,6 +229,17 @@ public class PlayerMovement : MonoBehaviour
             HoldControl.Instance.isPicked = false;
             Destroy(other.gameObject);
         }
+
+        if (other.CompareTag("slice3"))
+        {
+            UIManager.instance.isFindSlice3 = true;
+            other.gameObject.SetActive(false);
+        }
+        if (other.CompareTag("slice4"))
+        {
+            UIManager.instance.isFindSlice4 = true;
+            other.gameObject.SetActive(false);
+        }
     }
     #region Teleport
     public IEnumerator Teleport(Collider other)

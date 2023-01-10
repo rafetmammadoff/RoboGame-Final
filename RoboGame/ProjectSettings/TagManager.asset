@@ -24,6 +24,8 @@ TagManager:
   - activeTele
   - fallCube
   - blender
+  - slice3
+  - slice4
   layers:
   - Default
   - TransparentFX
