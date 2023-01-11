@@ -26,6 +26,8 @@ TagManager:
   - blender
   - slice3
   - slice4
+  - fvp
+  - svp
   layers:
   - Default
   - TransparentFX

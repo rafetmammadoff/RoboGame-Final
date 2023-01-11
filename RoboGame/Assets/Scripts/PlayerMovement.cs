@@ -30,7 +30,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float speed;
     float movement;
     public bool isMoveable = true;
-    bool isRight;
+    public bool isDead = false;
+    public bool isRight;
+
     private void Awake()
     {
         if (Instance==null)
@@ -125,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 MovementSpeed = 3f;
             }
-            if (isMoveable)
+            if (isMoveable && !isDead)
             {
                 Rigidbody.MovePosition(transform.position += (direction * MovementSpeed * Time.deltaTime));
             }
@@ -393,11 +395,22 @@ public class PlayerMovement : MonoBehaviour
         {
             tele.Instance.teleAnim.SetTrigger("active");
             tele.Instance.isActive = false;
+
             anim.SetTrigger("dead");
+            isDead= true;
+            StartCoroutine(waitFailPane());
         }
-        if (other.transform.CompareTag("blender"))
+        if (other.transform.CompareTag("blender") && blender.Instance.isActive)
         {
             anim.SetTrigger("dead");
+            
+           // Rigidbody.AddForce(Vector3.left*10f, ForceMode.Impulse);
+            isDead= true;
+            if (blender.Instance.isActive)
+            {
+                StartCoroutine(waitFailPane());
+            }
+            blender.Instance.isActive = false;
         }
 
         if (other.transform.CompareTag("box")  && HoldControl.Instance.isPicked)
@@ -410,6 +423,12 @@ public class PlayerMovement : MonoBehaviour
         {
             onGround = true;
         }
+    }
+    public IEnumerator waitFailPane()
+    {
+        yield return new WaitForSeconds(1.5f);
+        UIManager.instance.OpenFailPanel();
+
     }
     private void OnCollisionStay(Collision other)
     {

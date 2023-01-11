@@ -21,7 +21,10 @@ public class blender : MonoBehaviour
 
     void Update()
     {
-
+        if (!isActive)
+        {
+            anim.SetTrigger("deactive");
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {
